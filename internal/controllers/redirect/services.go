@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 )
 
-func Hello(w http.ResponseWriter, req *http.Request) {
-
-	fmt.Println("asdasdsadsadsadsa")
-	id := uuid.NewString()
-	fmt.Fprintf(w, id)
+func (rh *RedirectHandler) Perform(w http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Short URL: %v\n", vars["key"])
 }

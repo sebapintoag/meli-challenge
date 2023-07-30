@@ -29,3 +29,6 @@ dc-rebuild:
 	docker-compose down
 	docker-compose build
 	docker-compose up -d
+
+mongo-shell:
+	docker exec -it meli-mongodb mongosh

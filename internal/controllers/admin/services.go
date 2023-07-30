@@ -1,55 +1,37 @@
 package admin
 
 import (
-	"crypto/rand"
-	"encoding/hex"
+	"context"
 	"fmt"
 	"net/http"
 
-	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/spintoaguero/meli-challenge/internal/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Headers(w http.ResponseWriter, req *http.Request) {
-
-	for _, headers := range req.Header {
-		for _, h := range headers {
-			fmt.Fprintf(w, "%v: %v\n", "aaaa", h)
-		}
-	}
-}
-
 func (mh *AdminHandler) GenerateShortUrl(w http.ResponseWriter, req *http.Request) {
-	b := make([]byte, 3) //equals 6 characters
-	rand.Read(b)
-	key := hex.EncodeToString(b)
-
-	var document interface{}
-
-	document = bson.D{
-		{"rollNo", 175},
-		{"maths", 80},
-		{"science", 90},
-		{"computer", 95},
+	link := models.Link{
+		FullUrl: "https://mercadolibre.cl/dsadsad",
 	}
-
-	// insertOne accepts client , context, database
-	// name collection name and an interface that
-	// will be inserted into the  collection.
-	// insertOne returns an error and a result of
-	// insert in a single document into the collection.
-	insertOneResult, err := mongodb.InsertOne(mh.Database.Client, mh.Database.Context, "gfg",
-		"marks", document)
-
-	// handle the error
+	err := link.Create(mh.Database, context.Background())
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("Link created: %v\n", link)
 
-	// print the insertion id of the document,
-	// if it is inserted.
-	fmt.Println("Result of InsertOne")
-	fmt.Println(insertOneResult.InsertedID)
+	link.Delete(mh.Database, context.Background())
 
-	fmt.Fprintf(w, key)
+	fmt.Printf("Link deleted: %v\n", link)
+
+	objID, _ := primitive.ObjectIDFromHex("64c6c5b2de5ccbd917af34fc")
+
+	newLink := models.Link{
+		ID: objID,
+	}
+
+	newLink.Read(mh.Database, context.Background())
+
+	fmt.Printf("Link readed: %v\n", newLink)
+
+	fmt.Fprintf(w, link.ShortUrl)
 }

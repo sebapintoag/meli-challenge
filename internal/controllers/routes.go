@@ -18,11 +18,13 @@ func SetupRoutes(database *mongodb.Database) {
 		Database: database,
 	}
 
-	muxRouter.HandleFunc("/hello", redirect.Hello).Methods(http.MethodGet)
-
-	muxRouter.HandleFunc("/headers", admin.Headers).Methods(http.MethodGet)
+	redirectHandler := &redirect.RedirectHandler{
+		Database: database,
+	}
 
 	muxRouter.HandleFunc("/generate", adminHandler.GenerateShortUrl).Methods(http.MethodGet)
+
+	muxRouter.HandleFunc("/{key}", redirectHandler.Perform).Methods(http.MethodGet)
 
 	routesHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080"},
