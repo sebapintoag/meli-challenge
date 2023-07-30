@@ -11,17 +11,20 @@ import (
 )
 
 type Database struct {
-	Client *mongo.Client
+	Client  *mongo.Client
+	Context context.Context
+	Cancel  context.CancelFunc
 }
 
-func NewDbConnection(uri string) (*mongo.Client, context.Context, context.CancelFunc, error) {
+//func NewDbConnection(uri string) (*mongo.Client, context.Context, context.CancelFunc, error) {
+func NewDbConnection(uri string) (*Database, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(),
 		30*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	// Send a ping to confirm a successful connection
@@ -32,19 +35,22 @@ func NewDbConnection(uri string) (*mongo.Client, context.Context, context.Cancel
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
-	return client, ctx, cancel, err
+	return &Database{
+		Client:  client,
+		Context: ctx,
+		Cancel:  cancel,
+	}, nil
 }
 
-func CloseDbConnection(client *mongo.Client, ctx context.Context,
-	cancel context.CancelFunc) {
+func CloseDbConnection(database *Database) {
 
-	defer cancel()
+	defer database.Cancel()
 
 	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
+		if err := database.Client.Disconnect(database.Context); err != nil {
 			panic(err)
 		}
 	}()
