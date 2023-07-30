@@ -16,15 +16,17 @@ type Database struct {
 	Cancel  context.CancelFunc
 }
 
-//func NewDbConnection(uri string) (*mongo.Client, context.Context, context.CancelFunc, error) {
+// func NewDbConnection(uri string) (*mongo.Client, context.Context, context.CancelFunc, error) {
 func NewDbConnection(uri string) (*Database, error) {
-
-	ctx, cancel := context.WithTimeout(context.Background(),
-		30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 
 	if err != nil {
-		return nil, err
+		return &Database{
+			Client:  nil,
+			Context: ctx,
+			Cancel:  cancel,
+		}, err
 	}
 
 	// Send a ping to confirm a successful connection
@@ -35,7 +37,11 @@ func NewDbConnection(uri string) (*Database, error) {
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 
 	if err != nil {
-		return nil, err
+		return &Database{
+			Client:  nil,
+			Context: ctx,
+			Cancel:  cancel,
+		}, err
 	}
 
 	return &Database{
