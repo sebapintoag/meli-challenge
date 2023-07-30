@@ -1,4 +1,4 @@
-package internal
+package controllers
 
 import (
 	"net/http"
@@ -6,22 +6,23 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/spintoaguero/meli-challenge/configs"
-	"github.com/spintoaguero/meli-challenge/internal/services"
+	"github.com/spintoaguero/meli-challenge/internal/controllers/admin"
+	"github.com/spintoaguero/meli-challenge/internal/controllers/redirect"
 )
 
 func SetupRoutes(database *configs.Database) {
 
 	muxRouter := mux.NewRouter()
 
-	managerHandler := &services.ManagerHandler{
+	adminHandler := &admin.AdminHandler{
 		Database: database,
 	}
 
-	muxRouter.HandleFunc("/hello", services.Hello).Methods(http.MethodGet)
+	muxRouter.HandleFunc("/hello", redirect.Hello).Methods(http.MethodGet)
 
-	muxRouter.HandleFunc("/headers", services.Headers).Methods(http.MethodGet)
+	muxRouter.HandleFunc("/headers", admin.Headers).Methods(http.MethodGet)
 
-	muxRouter.HandleFunc("/generate", managerHandler.GenerateShortUrl).Methods(http.MethodGet)
+	muxRouter.HandleFunc("/generate", adminHandler.GenerateShortUrl).Methods(http.MethodGet)
 
 	routesHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080"},

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/spintoaguero/meli-challenge/configs"
-	"github.com/spintoaguero/meli-challenge/internal"
+	"github.com/spintoaguero/meli-challenge/internal/controllers"
 )
 
 func main() {
@@ -15,5 +15,5 @@ func main() {
 	// Release resource when main function is returned.
 	defer configs.CloseDbConnection(dbClient)
 
-	internal.SetupRoutes(dbClient)
+	controllers.SetupRoutes(dbClient)
 }

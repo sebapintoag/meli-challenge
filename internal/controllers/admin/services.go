@@ -1,4 +1,4 @@
-package services
+package admin
 
 import (
 	"crypto/rand"
@@ -6,14 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/spintoaguero/meli-challenge/configs"
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 )
-
-type ManagerHandler struct {
-	Database *configs.Database
-}
 
 func Headers(w http.ResponseWriter, req *http.Request) {
 
@@ -24,7 +19,7 @@ func Headers(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (mh *ManagerHandler) GenerateShortUrl(w http.ResponseWriter, req *http.Request) {
+func (mh *AdminHandler) GenerateShortUrl(w http.ResponseWriter, req *http.Request) {
 	b := make([]byte, 3) //equals 6 characters
 	rand.Read(b)
 	key := hex.EncodeToString(b)
