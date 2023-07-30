@@ -2,6 +2,7 @@ version: '3'
 
 services:
   meli-challange:
+    container_name: meli-app
     build:
       dockerfile: Dockerfile
       context: .
@@ -13,3 +14,26 @@ services:
       API_SERVER_ADDR: ":8080"
     ports:
       - "8080:8080"
+    networks:
+      - meli
+  mongodb:
+    container_name: meli-mongodb
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    volumes:
+      - dbdata:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: melidb
+    networks:
+      - meli
+
+networks:
+  meli:
+    name: meli
+
+volumes:
+  dbdata:
+    name: meli-mongodb-data
