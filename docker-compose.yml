@@ -16,6 +16,8 @@ services:
       - "8080:8080"
     networks:
       - meli
+    depends_on:
+      - "mongodb"
   mongodb:
     container_name: meli-mongodb
     image: mongodb/mongodb-community-server:6.0-ubi8
