@@ -1,7 +1,7 @@
 package redirect
 
-import "github.com/spintoaguero/meli-challenge/configs"
+import "github.com/spintoaguero/meli-challenge/pkg/mongodb"
 
 type RedirectHandler struct {
-	Database *configs.Database
+	Database *mongodb.Database
 }

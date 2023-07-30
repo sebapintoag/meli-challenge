@@ -1,7 +1,7 @@
 package admin
 
-import "github.com/spintoaguero/meli-challenge/configs"
+import "github.com/spintoaguero/meli-challenge/pkg/mongodb"
 
 type AdminHandler struct {
-	Database *configs.Database
+	Database *mongodb.Database
 }

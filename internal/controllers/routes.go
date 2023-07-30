@@ -5,12 +5,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"github.com/spintoaguero/meli-challenge/configs"
 	"github.com/spintoaguero/meli-challenge/internal/controllers/admin"
 	"github.com/spintoaguero/meli-challenge/internal/controllers/redirect"
+	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
 )
 
-func SetupRoutes(database *configs.Database) {
+func SetupRoutes(database *mongodb.Database) {
 
 	muxRouter := mux.NewRouter()
 
