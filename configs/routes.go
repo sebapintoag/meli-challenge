@@ -16,6 +16,8 @@ func SetupRoutes() {
 
 	muxRouter.HandleFunc("/headers", shortener.Headers).Methods(http.MethodGet)
 
+	muxRouter.HandleFunc("/generate", shortener.GenerateShortUrl).Methods(http.MethodGet)
+
 	routesHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080"},
 		AllowCredentials: true,
