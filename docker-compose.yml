@@ -38,6 +38,7 @@ services:
       - ./frontend/build:/meli/frontend/build
     ports:
       - "80:80"
+      - "40:40"
     networks:
       - melinet
     depends_on:
