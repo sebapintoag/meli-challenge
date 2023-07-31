@@ -1,14 +1,24 @@
 package redirect
 
 import (
-	"fmt"
+	"context"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/spintoaguero/meli-challenge/internal/models"
+	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
+	"github.com/spintoaguero/meli-challenge/pkg/utils"
 )
 
 func (rh *RedirectHandler) Perform(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Short URL: %v\n", vars["key"])
+	shortUrl := vars["key"]
+	var link models.Link
+
+	err := link.Find(rh.Database, context.Background(), mongodb.CreateFilter("short_url", shortUrl))
+	if err != nil {
+		utils.ErrorResponse(w, req, "fail", err)
+	}
+
+	http.Redirect(w, req, link.Url, http.StatusSeeOther)
 }

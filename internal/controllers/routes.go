@@ -8,6 +8,7 @@ import (
 	"github.com/spintoaguero/meli-challenge/internal/controllers/admin"
 	"github.com/spintoaguero/meli-challenge/internal/controllers/redirect"
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
+	"github.com/spintoaguero/meli-challenge/pkg/utils"
 )
 
 func SetupRoutes(database *mongodb.Database) {
@@ -22,9 +23,13 @@ func SetupRoutes(database *mongodb.Database) {
 		Database: database,
 	}
 
-	muxRouter.HandleFunc("/generate", adminHandler.GenerateShortUrl).Methods(http.MethodGet)
-
+	muxRouter.HandleFunc("/create", adminHandler.CreateShortUrl).Methods(http.MethodPost)
+	muxRouter.HandleFunc("/find", adminHandler.FindUrl).Methods(http.MethodPost)
 	muxRouter.HandleFunc("/{key}", redirectHandler.Perform).Methods(http.MethodGet)
+
+	muxRouter.HandleFunc("/{key}", adminHandler.DeleteShortUrl).Methods(http.MethodDelete)
+
+	muxRouter.Use(utils.ContentTypeApplicationJsonMiddleware)
 
 	routesHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080"},
