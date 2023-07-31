@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  meli-challange:
+  meli:
     container_name: meli-app
     build:
       dockerfile: Dockerfile
@@ -9,13 +9,13 @@ services:
       args:
         GO_VERSION: '1.19'
     volumes:
-      - .:/meli-challange
+      - .:/meli
     environment:
       API_SERVER_ADDR: ":8080"
     ports:
       - "8080:8080"
     networks:
-      - meli
+      - melinet
     depends_on:
       - "mongodb"
   mongodb:
@@ -30,11 +30,20 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
       MONGO_INITDB_DATABASE: melidb
     networks:
+      - melinet
+  web:
+    container_name: meli-nginx
+    build: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      - melinet
+    depends_on:
       - meli
 
 networks:
-  meli:
-    name: meli
+  melinet:
+    name: melinet
 
 volumes:
   dbdata:

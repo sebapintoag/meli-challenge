@@ -3,8 +3,8 @@ FROM golang:1.19
 # No need to use GOPATH
 ENV GO111MODULE=on
 # Set work directory
-WORKDIR /meli-challange
-# Copy *.mod and *.sum files to /meli-challange
+WORKDIR /meli
+# Copy *.mod and *.sum files to /meli
 COPY go.mod go.sum ./
 # Download go dependencies
 RUN go mod download
