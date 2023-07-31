@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"github.com/spintoaguero/meli-challenge/internal/controllers/admin"
+	"github.com/spintoaguero/meli-challenge/internal/controllers/api/v1/admin"
 	"github.com/spintoaguero/meli-challenge/internal/controllers/redirect"
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
 	"github.com/spintoaguero/meli-challenge/pkg/utils"
@@ -23,11 +23,12 @@ func SetupRoutes(database *mongodb.Database) {
 		Database: database,
 	}
 
-	muxRouter.HandleFunc("/create", adminHandler.CreateShortUrl).Methods(http.MethodPost)
-	muxRouter.HandleFunc("/find", adminHandler.FindUrl).Methods(http.MethodPost)
-	muxRouter.HandleFunc("/{key}", redirectHandler.Perform).Methods(http.MethodGet)
+	apiV1 := muxRouter.PathPrefix("/api/v1").Subrouter()
+	apiV1.HandleFunc("/create", adminHandler.CreateShortUrl).Methods(http.MethodPost)
+	apiV1.HandleFunc("/find", adminHandler.FindUrl).Methods(http.MethodPost)
+	apiV1.HandleFunc("/{key}", adminHandler.DeleteShortUrl).Methods(http.MethodDelete)
 
-	muxRouter.HandleFunc("/{key}", adminHandler.DeleteShortUrl).Methods(http.MethodDelete)
+	muxRouter.HandleFunc("/{key}", redirectHandler.Perform).Methods(http.MethodGet)
 
 	muxRouter.Use(utils.ContentTypeApplicationJsonMiddleware)
 
