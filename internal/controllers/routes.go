@@ -14,6 +14,7 @@ import (
 func SetupRoutes(database *mongodb.Database) {
 
 	muxRouter := mux.NewRouter()
+	muxRouter.StrictSlash(true)
 
 	adminHandler := &admin.AdminHandler{
 		Database: database,

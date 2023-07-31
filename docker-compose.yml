@@ -34,8 +34,26 @@ services:
   web:
     container_name: meli-nginx
     build: ./nginx
+    volumes:
+      - ./frontend/build:/meli/frontend/build
     ports:
       - "80:80"
+    networks:
+      - melinet
+    depends_on:
+      - meli
+      - frontend
+  frontend:
+    container_name: meli-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    tty: true
+    volumes:
+      - ./frontend:/meli
+    ports:
+      - "3000:3000"
     networks:
       - melinet
     depends_on:

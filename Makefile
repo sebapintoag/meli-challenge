@@ -32,3 +32,9 @@ dc-rebuild:
 
 mongo-shell:
 	docker exec -it meli-mongodb mongosh
+
+npm-install:
+	docker exec -it meli-frontend npm install
+
+npm-build:
+	docker exec -it meli-frontend npm run build
