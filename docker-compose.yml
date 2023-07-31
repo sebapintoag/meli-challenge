@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  meli:
+  backend:
     container_name: meli-app
     build:
       dockerfile: Dockerfile
@@ -41,7 +41,7 @@ services:
     networks:
       - melinet
     depends_on:
-      - meli
+      - backend
       - frontend
   frontend:
     container_name: meli-frontend
@@ -52,12 +52,13 @@ services:
     tty: true
     volumes:
       - ./frontend:/meli
+      - /meli/node_modules
     ports:
       - "3000:3000"
     networks:
       - melinet
     depends_on:
-      - meli
+      - backend
 
 networks:
   melinet:

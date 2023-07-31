@@ -8,7 +8,7 @@ ENV NODE_ENV development
 WORKDIR /meli
 
 # Copy the package.json and package-lock.json files
-COPY package.json /meli/package.json
+COPY package*.json /meli
 
 # Install dependencies
 RUN npm install
