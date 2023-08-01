@@ -1,0 +1,15 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	border-radius: 4px;
+  border: 2px solid #808080;
+  padding: 1em;
+}
+
+.input {
+}
+
+.successButton {
+	max-width: 8em;
+	margin-top: 0.5em;
+}

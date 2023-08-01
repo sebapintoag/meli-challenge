@@ -34,7 +34,7 @@ func SetupRoutes(database *mongodb.Database) {
 	muxRouter.Use(utils.ContentTypeApplicationJsonMiddleware)
 
 	routesHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080"},
+		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080", "http://localhost:3000", "http://localhost:40"},
 		AllowCredentials: true,
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
