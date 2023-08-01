@@ -13,8 +13,8 @@ import (
 
 type Link struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	ShortUrl  string             `bson:"short_url"`
-	Url       string             `bson:"url,omitempty"`
+	ShortUrl  string             `bson:"short_url" json:"short_url,omitempty"`
+	Url       string             `bson:"url,omitempty" json:"url,omitempty"`
 	CreatedAt time.Time          `bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `bson:"updated_at,omitempty"`
 }
@@ -36,7 +36,6 @@ func FindByUrl(db *mongodb.Database, ctx context.Context, url string, result int
 }
 
 func (l *Link) Find(db *mongodb.Database, ctx context.Context, filter interface{}) error {
-	//bson.M{"_id": l.ID}
 	err := mongodb.FindOne(db.Client, ctx, "meli-db", "links", filter, &l)
 	if err != nil {
 		return err

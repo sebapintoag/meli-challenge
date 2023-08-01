@@ -19,6 +19,7 @@ const Create = () => {
 		setLoading(true)
 		axios.post(`http://localhost/api/v1/create`, { url: url })
 		.then((res) => {
+			console.log(res)
 			const body = res.data
 			setLink({
 				url: body.data.link.url,
@@ -26,7 +27,12 @@ const Create = () => {
 				createdAt: body.data.link.created_at
 			})
 			setshowDetails(true)
-			setLabel('URL corta creada');
+			if(res.status == 201) {
+				setLabel('URL corta creada');
+			} else {
+				setLabel(`${url} ya tiene una URL corta`);
+			}
+			
 		})
 		.catch((err) => {
 			setshowDetails(false)
@@ -39,11 +45,7 @@ const Create = () => {
 	}
 
 	function restartLink() {
-		setLink({
-			url: '',
-			shortUrl: '',
-			createdAt: ''
-		})
+		setshowLinkInfo(false)
 	}
 
   return (

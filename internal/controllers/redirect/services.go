@@ -17,7 +17,7 @@ func (rh *RedirectHandler) Perform(w http.ResponseWriter, req *http.Request) {
 
 	err := link.Find(rh.Database, context.Background(), mongodb.CreateFilter("short_url", shortUrl))
 	if err != nil {
-		utils.ErrorResponse(w, req, "fail", err)
+		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
 	}
 
 	http.Redirect(w, req, link.Url, http.StatusSeeOther)

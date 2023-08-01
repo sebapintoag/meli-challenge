@@ -16,13 +16,26 @@ func (mh *AdminHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request)
 	// Parse body request
 	var link models.Link
 	if err := json.NewDecoder(req.Body).Decode(&link); err != nil {
-		utils.ErrorResponse(w, req, "fail", err)
+		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	// Return existing link if already present in DB
+	if err := link.Find(mh.Database, context.Background(), mongodb.CreateFilter("url", link.Url)); err == nil {
+		data := map[string]interface{}{
+			"link": LinkResponse{
+				Url:       link.Url,
+				ShortUrl:  link.ShortUrl,
+				CreatedAt: link.CreatedAt,
+			},
+		}
+		utils.SuccessResponse(w, req, data, http.StatusOK)
 		return
 	}
 
 	err := link.Create(mh.Database, context.Background())
 	if err != nil {
-		utils.ErrorResponse(w, req, "error", err)
+		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
 	}
 
@@ -34,23 +47,21 @@ func (mh *AdminHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request)
 		},
 	}
 
-	utils.SuccessResponse(w, req, data)
+	utils.SuccessResponse(w, req, data, http.StatusCreated)
 }
 
 func (mh *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 	// Parse body request
-	var linkReq LinkRequest
+	var link models.Link
 	fmt.Println(req.Body)
-	if err := json.NewDecoder(req.Body).Decode(&linkReq); err != nil {
-		utils.ErrorResponse(w, req, "fail", err)
+	if err := json.NewDecoder(req.Body).Decode(&link); err != nil {
+		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
 		return
 	}
 
-	var link models.Link
-
-	err := link.Find(mh.Database, context.Background(), mongodb.CreateFilter("short_url", linkReq.ShortUrl))
+	err := link.Find(mh.Database, context.Background(), mongodb.CreateFilter("short_url", link.ShortUrl))
 	if err != nil {
-		utils.ErrorResponse(w, req, "error", err)
+		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
 	}
 
@@ -62,7 +73,7 @@ func (mh *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 		},
 	}
 
-	utils.SuccessResponse(w, req, data)
+	utils.SuccessResponse(w, req, data, http.StatusOK)
 }
 
 func (mh *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request) {
@@ -72,12 +83,12 @@ func (mh *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request)
 	var link models.Link
 	err := link.Find(mh.Database, context.Background(), mongodb.CreateFilter("short_url", shortUrl))
 	if err != nil {
-		utils.ErrorResponse(w, req, "error", err)
+		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
 	}
 
 	if err := link.Delete(mh.Database, context.Background()); err != nil {
-		utils.ErrorResponse(w, req, "error", err)
+		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
 	}
 
@@ -85,5 +96,5 @@ func (mh *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request)
 		"message": "link deleted",
 	}
 
-	utils.SuccessResponse(w, req, data)
+	utils.SuccessResponse(w, req, data, http.StatusCreated)
 }

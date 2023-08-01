@@ -15,24 +15,24 @@ type ErrorBody struct {
 	Message string `json:"message"`
 }
 
-func ErrorResponse(w http.ResponseWriter, req *http.Request, status string, err error) {
+func ErrorResponse(w http.ResponseWriter, req *http.Request, status string, code int, err error) {
 	response := ErrorBody{
 		Status:  status,
 		Message: err.Error(),
 	}
 	marshaledResponse, _ := json.Marshal(response)
-	w.WriteHeader(http.StatusBadRequest)
+	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(marshaledResponse)
 }
 
-func SuccessResponse(w http.ResponseWriter, req *http.Request, body map[string]interface{}) {
+func SuccessResponse(w http.ResponseWriter, req *http.Request, body map[string]interface{}, code int) {
 	response := SuccessBody{
 		Status: "success",
 		Data:   body,
 	}
 	marshaledResponse, _ := json.Marshal(response)
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(marshaledResponse)
 }
