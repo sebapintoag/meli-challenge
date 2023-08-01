@@ -36,11 +36,11 @@ func SetupRoutes(database *mongodb.Database) {
 	muxRouter.Use(utils.ContentTypeApplicationJsonMiddleware)
 
 	routesHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080", "http://localhost:3000", "http://localhost:40"},
+		AllowedOrigins:   []string{"http://localhost", "http://localhost:8080", "http://localhost:3000", "http://localhost:40", "http://me.li", "http://me.li:40"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowCredentials: true,
 		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		Debug: false,
 	}).Handler(muxRouter)
 
 	http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("MELI_APP_PORT")), routesHandler)

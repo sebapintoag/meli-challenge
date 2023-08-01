@@ -51,7 +51,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    restart: always
     tty: true
     volumes:
       - ./frontend:/meli

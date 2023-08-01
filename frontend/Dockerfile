@@ -1,5 +1,5 @@
 # Use a Node.js image
-FROM node:latest
+FROM node:current-alpine
 
 # Declare env
 ENV NODE_ENV development
@@ -16,7 +16,11 @@ RUN npm install
 # Copy everything to the container
 COPY . /meli
 
-# Expose port
-EXPOSE 3000
+# Expose port (development)
+#EXPOSE 3000
 
-CMD ["npm","start"]
+# Build app (production build)
+CMD ["npm","run", "build"]
+
+# Run app (development)
+#CMD ["npm","start"]
