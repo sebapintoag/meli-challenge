@@ -3,7 +3,9 @@ package admin
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/spintoaguero/meli-challenge/internal/models"
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
@@ -18,6 +20,9 @@ func (ah *AdminHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request)
 		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
 		return
 	}
+
+	// Remove redirect URL from link.ShortURL
+	link.RemoveUrlPrefix()
 
 	// Return existing link if already present in DB
 	if err := link.Find(ah.Database, context.Background(), mongodb.CreateFilter("url", link.Url)); err == nil {
@@ -44,6 +49,9 @@ func (ah *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Remove redirect URL from link.ShortURL
+	link.RemoveUrlPrefix()
+
 	err := link.Find(ah.Database, context.Background(), mongodb.CreateFilter("short_url", link.ShortUrl))
 	if err != nil {
 		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
@@ -61,6 +69,9 @@ func (ah *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request)
 		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
 		return
 	}
+
+	// Remove redirect URL from link.ShortURL
+	link.RemoveUrlPrefix()
 
 	err := link.Find(ah.Database, context.Background(), mongodb.CreateFilter("short_url", link.ShortUrl))
 	if err != nil {
@@ -85,7 +96,7 @@ func (ah *AdminHandler) newLinkResponse(link models.Link) map[string]interface{}
 	return map[string]interface{}{
 		"link": LinkResponse{
 			Url:       link.Url,
-			ShortUrl:  link.ShortUrl,
+			ShortUrl:  fmt.Sprintf("%s/%s", os.Getenv("MELI_REDIRECT_URL"), link.ShortUrl),
 			CreatedAt: link.CreatedAt,
 		},
 	}

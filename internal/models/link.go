@@ -2,10 +2,10 @@ package models
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
+	"math/rand"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
@@ -46,7 +46,7 @@ func (l *Link) Find(db *mongodb.Database, ctx context.Context, filter interface{
 }
 
 func (l *Link) Create(db *mongodb.Database, ctx context.Context) error {
-	l.ShortUrl = generateShortUrl()
+	l.ShortUrl = generateShortUrlKey()
 	l.CreatedAt = time.Now()
 	l.UpdatedAt = time.Now()
 
@@ -69,9 +69,22 @@ func (l *Link) Delete(db *mongodb.Database, ctx context.Context) error {
 	return nil
 }
 
-func generateShortUrl() string {
-	b := make([]byte, 3) //equals 6 characters
-	rand.Read(b)
+// Generates a random string that will be used as a short URL key
+func generateShortUrlKey() string {
+	keySize := 6
+	alphabet := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	alphabetSize := len(alphabet)
+	var builder strings.Builder
 
-	return fmt.Sprintf("%s/%s", os.Getenv("MELI_REDIRECT_URL"), hex.EncodeToString(b))
+	for i := 0; i < keySize; i++ {
+		ch := alphabet[rand.Intn(alphabetSize)]
+		builder.WriteRune(ch)
+	}
+
+	return builder.String()
+}
+
+// Replaces "http://redirect.link" + "/" in link.ShortURL (if present)
+func (l *Link) RemoveUrlPrefix() {
+	l.ShortUrl = strings.Replace(l.ShortUrl, fmt.Sprintf("%s/", os.Getenv("MELI_REDIRECT_URL")), "", 1)
 }
