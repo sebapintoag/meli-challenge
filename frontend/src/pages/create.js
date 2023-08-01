@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LinkInput from '../components/LinkInput';
-import axios from "axios";
 import LinkInfo from '../components/LinkInfo';
+import axios from "axios";
 
 const Create = () => {
 	const [link, setLink] = useState({
@@ -10,7 +10,10 @@ const Create = () => {
 		createdAt: ''
 	})
 
+	const [showLinkInfo, setshowLinkInfo] = useState(false);
+	const [showDetails, setshowDetails] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [label, setLabel] = useState('');
 
 	function createShortUrl(url) {
 		setLoading(true)
@@ -21,12 +24,16 @@ const Create = () => {
 				url: body.data.link.url,
 				shortUrl: body.data.link.short_url,
 				createdAt: body.data.link.created_at
-			})			
+			})
+			setshowDetails(true)
+			setLabel('URL corta creada');
 		})
 		.catch((err) => {
-			console.error(err)
+			setshowDetails(false)
+			setLabel('No se pudo crear la URL corta');
 		})
 		.then(() => {
+			setshowLinkInfo(true)
 			setLoading(false)
 		});
 	}
@@ -43,7 +50,7 @@ const Create = () => {
 		<div className='page'>
 			<h1>Crear un nuevo link corto</h1>
 			<LinkInput
-				label={'Ingresa la URL que quieres acortar'}
+				label={'Ingresa la URL que quieres acortar:'}
 				placeholder={
 					'https://www.mercadolibre.cl/amazon-echo-dot-5th-gen-with-clock-con-asistente-virtual-alexa-pantalla-integrada-cloud-blue-110v240v/p/MLC19757118'
 				}
@@ -53,7 +60,7 @@ const Create = () => {
 				loading={loading}
 			/>
 			<br/>
-			<LinkInfo label={'asdasdasd'} link={link} />
+			<LinkInfo label={label} link={link} visible={showLinkInfo} showDetails={showDetails} />
 		</div>
     
   );
