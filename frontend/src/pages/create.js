@@ -54,7 +54,7 @@ const Create = () => {
 			<LinkInput
 				label={'Ingresa la URL que quieres acortar:'}
 				placeholder={
-					'https://www.mercadolibre.cl/amazon-echo-dot-5th-gen-with-clock-con-asistente-virtual-alexa-pantalla-integrada-cloud-blue-110v240v/p/MLC19757118'
+					'https://www.mercadolibre.cl/item0121201'
 				}
 				buttonText={'Acortar'}
 				buttonAction={createShortUrl}

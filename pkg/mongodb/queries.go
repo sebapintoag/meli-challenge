@@ -3,7 +3,9 @@ package mongodb
 import (
 	"context"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func FindOne(client *mongo.Client, ctx context.Context, databaseName, collectionName string, filter interface{}, result interface{}) error {
@@ -34,4 +36,19 @@ func DeleteOne(client *mongo.Client, ctx context.Context, databaseName, collecti
 	// query is used to match a document  from the collection.
 	result, err := collection.DeleteOne(ctx, query)
 	return result, err
+}
+
+func CreateUniqueIndex(client *mongo.Client, ctx context.Context, databaseName, collectionName string, indexName string) error {
+	indexModel := mongo.IndexModel{
+		Keys:    bson.D{{indexName, 1}},
+		Options: options.Index().SetUnique(true),
+	}
+
+	collection := client.Database(databaseName).Collection(collectionName)
+	_, err := collection.Indexes().CreateOne(ctx, indexModel)
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
 }
