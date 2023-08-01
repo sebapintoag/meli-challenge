@@ -18,6 +18,8 @@ services:
       - melinet
     depends_on:
       - "mongodb"
+    env_file:
+      - .env
   mongodb:
     container_name: meli-mongodb
     image: mongodb/mongodb-community-server:6.0-ubi8

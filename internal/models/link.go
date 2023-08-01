@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
@@ -71,5 +73,5 @@ func generateShortUrl() string {
 	b := make([]byte, 3) //equals 6 characters
 	rand.Read(b)
 
-	return hex.EncodeToString(b)
+	return fmt.Sprintf("%s/%s", os.Getenv("MELI_REDIRECT_URL"), hex.EncodeToString(b))
 }

@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -41,5 +43,5 @@ func SetupRoutes(database *mongodb.Database) {
 		Debug: true,
 	}).Handler(muxRouter)
 
-	http.ListenAndServe(":8080", routesHandler)
+	http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("MELI_APP_PORT")), routesHandler)
 }

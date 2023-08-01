@@ -3,7 +3,6 @@ package admin
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -39,7 +38,6 @@ func (ah *AdminHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request)
 func (ah *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 	// Parse body request
 	var link models.Link
-	fmt.Println(req.Body)
 	if err := json.NewDecoder(req.Body).Decode(&link); err != nil {
 		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
 		return
