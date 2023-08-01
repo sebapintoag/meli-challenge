@@ -10,6 +10,7 @@ import (
 	"github.com/spintoaguero/meli-challenge/pkg/utils"
 )
 
+// Create short URL
 func (ah *AdminHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request) {
 	// Parse body request
 	var link models.Link
@@ -34,6 +35,7 @@ func (ah *AdminHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request)
 	utils.SuccessResponse(w, req, ah.newLinkResponse(link), http.StatusCreated)
 }
 
+// Find short URL
 func (ah *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 	// Parse body request
 	var link models.Link
@@ -51,6 +53,7 @@ func (ah *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 	utils.SuccessResponse(w, req, ah.newLinkResponse(link), http.StatusOK)
 }
 
+// Delete short URL
 func (ah *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request) {
 	// Parse body request
 	var link models.Link
@@ -77,6 +80,7 @@ func (ah *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request)
 	utils.SuccessResponse(w, req, data, http.StatusCreated)
 }
 
+// Creates a new LinkResponse object
 func (ah *AdminHandler) newLinkResponse(link models.Link) map[string]interface{} {
 	return map[string]interface{}{
 		"link": LinkResponse{

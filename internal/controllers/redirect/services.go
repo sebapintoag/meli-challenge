@@ -12,6 +12,7 @@ import (
 	"github.com/spintoaguero/meli-challenge/pkg/utils"
 )
 
+// Performs a redirect from short URL to full URL
 func (rh *RedirectHandler) Perform(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	shortUrl := vars["key"]
