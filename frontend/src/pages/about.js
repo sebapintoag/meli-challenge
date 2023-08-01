@@ -18,6 +18,10 @@ const About = () => {
         >
           Learn React
         </a>
+        <br/><br/>
+        <small>
+          <small>Desarrollado por: Sebastián Pinto-Agüero - 08/2023</small>
+        </small>
       </header>
     </div>
 	);

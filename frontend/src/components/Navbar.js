@@ -18,13 +18,13 @@ const Navbar = () => {
     <div className={styles.nav}>
       <div className={styles.menu}>
         {[
-          { path: '/', name: 'Home' },
-          { path: '/create', name: 'Create' },
-          { path: '/find', name: 'Find' },
-          { path: '/delete', name: 'Delete' },
-          { path: '/about', name: 'About' },
+          { path: '/', name: 'Inicio' },
+          { path: '/create', name: 'Crear' },
+          { path: '/find', name: 'Buscar' },
+          { path: '/delete', name: 'Eliminar' },
+          { path: '/about', name: 'Acerca de' },
         ].map((link) => {
-          return <Link path={link.path} name={link.name} />;
+          return <Link path={link.path} name={link.name} key={link.name} />;
         })}
       </div>
     </div>
