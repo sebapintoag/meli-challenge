@@ -27,7 +27,7 @@ const Create = () => {
 				createdAt: body.data.link.created_at
 			})
 			setshowDetails(true)
-			if(res.status == 201) {
+			if(res.status === 201) {
 				setLabel('URL corta creada');
 			} else {
 				setLabel(`${url} ya tiene una URL corta`);

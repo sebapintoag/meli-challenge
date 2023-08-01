@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/spintoaguero/meli-challenge/internal/models"
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
 	"github.com/spintoaguero/meli-challenge/pkg/utils"
@@ -53,11 +52,14 @@ func (ah *AdminHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 }
 
 func (ah *AdminHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	shortUrl := vars["key"]
-
+	// Parse body request
 	var link models.Link
-	err := link.Find(ah.Database, context.Background(), mongodb.CreateFilter("short_url", shortUrl))
+	if err := json.NewDecoder(req.Body).Decode(&link); err != nil {
+		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	err := link.Find(ah.Database, context.Background(), mongodb.CreateFilter("short_url", link.ShortUrl))
 	if err != nil {
 		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return

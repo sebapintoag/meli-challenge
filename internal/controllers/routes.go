@@ -29,7 +29,7 @@ func SetupRoutes(database *mongodb.Database) {
 	apiV1 := muxRouter.PathPrefix("/api/v1").Subrouter()
 	apiV1.HandleFunc("/create", adminHandler.CreateShortUrl).Methods(http.MethodPost)
 	apiV1.HandleFunc("/find", adminHandler.FindUrl).Methods(http.MethodPost)
-	apiV1.HandleFunc("/{key}", adminHandler.DeleteShortUrl).Methods(http.MethodDelete)
+	apiV1.HandleFunc("/delete", adminHandler.DeleteShortUrl).Methods(http.MethodDelete)
 
 	muxRouter.HandleFunc("/{key}", redirectHandler.Perform).Methods(http.MethodGet)
 

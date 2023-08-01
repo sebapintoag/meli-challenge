@@ -11,7 +11,9 @@ const Delete = () => {
   function deleteShortUrl(short_url) {
     setLoading(true);
     axios
-      .delete(`http://localhost/api/v1/${short_url}`)
+      .delete('http://localhost/api/v1/delete', {
+        data: { short_url: short_url }
+      })
       .then((res) => {
         setLabel(`URL corta ${short_url} eliminada exitosamente`);
       })
