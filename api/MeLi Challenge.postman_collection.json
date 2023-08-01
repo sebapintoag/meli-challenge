@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "a031dbe6-40f9-49ab-b3f1-87caa739a2f4",
+		"name": "MeLi Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "admin",
+							"item": [
+								{
+									"name": "Create short URL",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"url\": \"https://www.mercadolibre.cl/amazon-echo-dot-5th-gen-with-clock-con-asistente-virtual-alexa-pantalla-integrada-cloud-blue-110v240v/p/MLC19757118\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost/api/v1/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"api",
+												"v1",
+												"create"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Find short URL",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"short_url\": \"http://me.li/Dsc2WD\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost/api/v1/find",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"api",
+												"v1",
+												"find"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete short URL",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"short_url\": \"http://me.li/Dsc2WD\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost/api/v1/delete",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"api",
+												"v1",
+												"delete"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "redirect",
+			"item": [
+				{
+					"name": "Go to URL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://me.li/Dsc2WD",
+							"protocol": "http",
+							"host": [
+								"me",
+								"li"
+							],
+							"path": [
+								"Dsc2WD"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
