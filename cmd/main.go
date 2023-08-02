@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/spintoaguero/meli-challenge/internal/controllers"
+	"github.com/spintoaguero/meli-challenge/internal/repositories"
 	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
 )
 
@@ -22,8 +23,11 @@ func main() {
 		fmt.Println(err)
 	}
 
+	// Create repositories
+	userRepo := repositories.NewLinkRepository(dbClient)
+
 	// Release resource when main function is returned.
 	defer mongodb.CloseDbConnection(dbClient)
 
-	controllers.SetupRoutes(dbClient)
+	controllers.SetupRoutes(userRepo)
 }

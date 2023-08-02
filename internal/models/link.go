@@ -8,10 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spintoaguero/meli-challenge/pkg/mongodb"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+type ILinkRepository interface {
+	Find(ctx context.Context, filter interface{}) (*Link, error)
+	Create(ctx context.Context, l *Link) (*Link, error)
+	Delete(ctx context.Context, l *Link) error
+}
 
 type Link struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
@@ -21,56 +25,8 @@ type Link struct {
 	UpdatedAt time.Time          `bson:"updated_at,omitempty"`
 }
 
-func FindByShortUrl(db *mongodb.Database, ctx context.Context, shortUrl string, result interface{}) error {
-	err := mongodb.FindOne(db.Client, ctx, "meli-db", "links", bson.M{"short_url": shortUrl}, &result)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func FindByUrl(db *mongodb.Database, ctx context.Context, url string, result interface{}) error {
-	err := mongodb.FindOne(db.Client, ctx, "meli-db", "links", bson.M{"url": url}, &result)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (l *Link) Find(db *mongodb.Database, ctx context.Context, filter interface{}) error {
-	err := mongodb.FindOne(db.Client, ctx, "meli-db", "links", filter, &l)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (l *Link) Create(db *mongodb.Database, ctx context.Context) error {
-	l.ShortUrl = generateShortUrlKey()
-	l.CreatedAt = time.Now()
-	l.UpdatedAt = time.Now()
-
-	result, err := mongodb.InsertOne(db.Client, ctx, "meli-db", "links", &l)
-	if err != nil {
-		return err
-	}
-
-	l.ID = result.InsertedID.(primitive.ObjectID)
-
-	return nil
-}
-
-func (l *Link) Delete(db *mongodb.Database, ctx context.Context) error {
-	_, err := mongodb.DeleteOne(db.Client, ctx, "meli-db", "links", bson.M{"_id": l.ID})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // Generates a random string that will be used as a short URL key
-func generateShortUrlKey() string {
+func (l *Link) GenerateShortUrlKey() {
 	keySize := 6
 	alphabet := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	alphabetSize := len(alphabet)
@@ -81,7 +37,7 @@ func generateShortUrlKey() string {
 		builder.WriteRune(ch)
 	}
 
-	return builder.String()
+	l.ShortUrl = builder.String()
 }
 
 // Replaces "http://redirect.link" + "/" in link.ShortURL (if present)
