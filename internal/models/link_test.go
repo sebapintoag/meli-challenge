@@ -1,14 +1,16 @@
-package models
+package models_test
 
 import (
 	"fmt"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/spintoaguero/meli-challenge/internal/models"
 )
 
 func TestGenerateShortUrlKey_Result_NonEmptyString(t *testing.T) {
-	var link Link
+	var link models.Link
 	link.GenerateShortUrlKey()
 
 	if link.ShortUrl == "" {
@@ -17,7 +19,7 @@ func TestGenerateShortUrlKey_Result_NonEmptyString(t *testing.T) {
 }
 
 func TestGenerateShortUrlKey_ExpectedLenght_6(t *testing.T) {
-	var link Link
+	var link models.Link
 	link.GenerateShortUrlKey()
 	keyLength := len(link.ShortUrl)
 
@@ -28,7 +30,7 @@ func TestGenerateShortUrlKey_ExpectedLenght_6(t *testing.T) {
 
 func TestRemoveUrlPrefix_WithPrefix_RemovesIt(t *testing.T) {
 	prefix := os.Getenv("MELI_REDIRECT_URL")
-	link := &Link{
+	link := &models.Link{
 		ShortUrl: fmt.Sprintf("%s/XXYYZZ", prefix),
 	}
 	link.RemoveUrlPrefix()
@@ -39,7 +41,7 @@ func TestRemoveUrlPrefix_WithPrefix_RemovesIt(t *testing.T) {
 }
 
 func TestRemoveUrlPrefix_WithoutPrefix_SameUrl(t *testing.T) {
-	link := &Link{
+	link := &models.Link{
 		ShortUrl: "XXYYZZ",
 	}
 	link.RemoveUrlPrefix()

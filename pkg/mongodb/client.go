@@ -14,10 +14,11 @@ type Database struct {
 	Client  *mongo.Client
 	Context context.Context
 	Cancel  context.CancelFunc
+	Name    string
 }
 
 // func NewDbConnection(uri string) (*mongo.Client, context.Context, context.CancelFunc, error) {
-func NewDbConnection(uri string) (*Database, error) {
+func NewDbConnection(uri, databaseName string) (*Database, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 
@@ -26,6 +27,7 @@ func NewDbConnection(uri string) (*Database, error) {
 			Client:  nil,
 			Context: ctx,
 			Cancel:  cancel,
+			Name:    databaseName,
 		}, err
 	}
 
@@ -41,6 +43,7 @@ func NewDbConnection(uri string) (*Database, error) {
 			Client:  nil,
 			Context: ctx,
 			Cancel:  cancel,
+			Name:    databaseName,
 		}, err
 	}
 
@@ -48,6 +51,7 @@ func NewDbConnection(uri string) (*Database, error) {
 		Client:  client,
 		Context: ctx,
 		Cancel:  cancel,
+		Name:    databaseName,
 	}, nil
 }
 

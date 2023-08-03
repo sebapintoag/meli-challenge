@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// get Client, Context, CancelFunc and err from connect method.
-	dbClient, err := mongodb.NewDbConnection(os.Getenv("MELI_MONGODB_URI"))
+	dbClient, err := mongodb.NewDbConnection(os.Getenv("MELI_MONGODB_URI"), os.Getenv("MELI_DB_NAME"))
 	if err != nil {
 		panic(err)
 	}
