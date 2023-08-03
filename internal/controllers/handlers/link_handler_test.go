@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -47,6 +48,52 @@ func TestMain(m *testing.M) {
 	// Drop test DB after tests are executed
 	r.Database.Client.Database(r.Database.Name).Drop(context.TODO())
 	os.Exit(code)
+}
+
+func TestRedirect_ExistingUrl_Status303(t *testing.T) {
+	// Create previous link
+	link := &models.Link{
+		ShortUrl: "ZZZZZZ",
+		Url:      "https://www.mercadolibre.cl",
+	}
+	h.LinkRepository.Create(context.TODO(), link)
+
+	r := mux.NewRouter()
+	r.HandleFunc("/{key}", h.Redirect).Methods(http.MethodGet)
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+
+	res, err := http.Get(ts.URL + "/ZZZZZZ")
+
+	if err != nil {
+		t.Errorf("got %s, expected nil", err.Error())
+	}
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("got %d, expected %d", res.StatusCode, http.StatusSeeOther)
+	}
+	if strings.Compare(res.Request.URL.String(), link.Url) != 0 {
+		t.Errorf("got %s, expected %s", res.Request.URL, link.Url)
+	}
+
+	defer res.Body.Close()
+}
+
+func TestRedirect_NonExistingUrl_Status404(t *testing.T) {
+	r := mux.NewRouter()
+	r.HandleFunc("/{key}", h.Redirect).Methods(http.MethodGet)
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+
+	res, err := http.Get(ts.URL + "/ZZZAAA")
+
+	if err != nil {
+		t.Errorf("got %s, expected nil", err.Error())
+	}
+	if res.StatusCode != http.StatusNotFound {
+		t.Errorf("got %d, expected %d", res.StatusCode, http.StatusNotFound)
+	}
+
+	defer res.Body.Close()
 }
 
 func TestCreateShortUrl_NewUrl_Status201(t *testing.T) {

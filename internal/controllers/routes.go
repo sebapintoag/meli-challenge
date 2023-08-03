@@ -28,7 +28,7 @@ func SetupRoutes(linkRepository *repositories.LinkRepository) {
 	apiV1.HandleFunc("/delete", linkHandler.DeleteShortUrl).Methods(http.MethodDelete)
 
 	// Set handler for short URL redirection
-	muxRouter.HandleFunc("/{key}", linkHandler.Perform).Methods(http.MethodGet)
+	muxRouter.HandleFunc("/{key}", linkHandler.Redirect).Methods(http.MethodGet)
 
 	muxRouter.Use(utils.ContentTypeApplicationJsonMiddleware)
 

@@ -43,13 +43,14 @@ func (l *LinkHandler) newLinkResponse(link *models.Link) map[string]interface{} 
 }
 
 // Performs a redirect from short URL to full URL
-func (h *LinkHandler) Perform(w http.ResponseWriter, req *http.Request) {
+func (h *LinkHandler) Redirect(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	shortUrl := vars["key"]
 
 	link, err := h.LinkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", shortUrl))
 	if err != nil {
-		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
+		utils.ErrorResponse(w, req, "fail", http.StatusNotFound, err)
+		return
 	}
 
 	http.Redirect(w, req, link.Url, http.StatusSeeOther)
