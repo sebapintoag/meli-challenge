@@ -15,7 +15,7 @@ import (
 )
 
 type LinkHandler struct {
-	linkRepository models.ILinkRepository
+	LinkRepository models.ILinkRepository
 }
 
 type LinkResponse struct {
@@ -27,7 +27,7 @@ type LinkResponse struct {
 // Creates a new link handler object
 func NewLinkHandler(linkRepository models.ILinkRepository) *LinkHandler {
 	return &LinkHandler{
-		linkRepository: linkRepository,
+		LinkRepository: linkRepository,
 	}
 }
 
@@ -47,7 +47,7 @@ func (h *LinkHandler) Perform(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	shortUrl := vars["key"]
 
-	link, err := h.linkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", shortUrl))
+	link, err := h.LinkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", shortUrl))
 	if err != nil {
 		utils.ErrorResponse(w, req, "fail", http.StatusUnprocessableEntity, err)
 	}
@@ -65,7 +65,7 @@ func (h *LinkHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Return existing link if already present in DB
-	link, _ := h.linkRepository.Find(context.Background(), mongodb.CreateFilter("url", linkReq.Url))
+	link, _ := h.LinkRepository.Find(context.Background(), mongodb.CreateFilter("url", linkReq.Url))
 	if link != nil {
 		utils.SuccessResponse(w, req, h.newLinkResponse(link), http.StatusOK)
 		return
@@ -73,7 +73,7 @@ func (h *LinkHandler) CreateShortUrl(w http.ResponseWriter, req *http.Request) {
 
 	// Create new link for URL
 	linkReq.GenerateShortUrlKey()
-	link, err := h.linkRepository.Create(context.Background(), &linkReq)
+	link, err := h.LinkRepository.Create(context.Background(), &linkReq)
 	if err != nil {
 		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
@@ -94,7 +94,7 @@ func (h *LinkHandler) FindUrl(w http.ResponseWriter, req *http.Request) {
 	// Remove redirect URL from link.ShortURL
 	linkReq.RemoveUrlPrefix()
 
-	link, err := h.linkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", linkReq.ShortUrl))
+	link, err := h.LinkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", linkReq.ShortUrl))
 	if err != nil {
 		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
@@ -115,13 +115,13 @@ func (h *LinkHandler) DeleteShortUrl(w http.ResponseWriter, req *http.Request) {
 	// Remove redirect URL from link.ShortURL
 	linkReq.RemoveUrlPrefix()
 
-	link, err := h.linkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", linkReq.ShortUrl))
+	link, err := h.LinkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", linkReq.ShortUrl))
 	if err != nil {
 		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
 	}
 
-	if err := h.linkRepository.Delete(context.Background(), link); err != nil {
+	if err := h.LinkRepository.Delete(context.Background(), link); err != nil {
 		utils.ErrorResponse(w, req, "error", http.StatusInternalServerError, err)
 		return
 	}
