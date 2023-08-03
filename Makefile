@@ -38,3 +38,6 @@ npm-install:
 
 npm-build:
 	docker exec -it meli-frontend npm run build
+
+go-test:
+	docker exec -it meli-app go test -v ./...
