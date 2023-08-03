@@ -49,7 +49,7 @@ func (h *LinkHandler) Redirect(w http.ResponseWriter, req *http.Request) {
 
 	link, err := h.LinkRepository.Find(context.Background(), mongodb.CreateFilter("short_url", shortUrl))
 	if err != nil {
-		utils.ErrorResponse(w, req, "fail", http.StatusNotFound, err)
+		http.Redirect(w, req, os.Getenv("MELI_REDIRECT_ERROR_URL"), http.StatusSeeOther)
 		return
 	}
 

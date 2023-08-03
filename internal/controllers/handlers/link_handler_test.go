@@ -69,7 +69,7 @@ func TestRedirect_ExistingUrl_Status303(t *testing.T) {
 		t.Errorf("got %s, expected nil", err.Error())
 	}
 	if res.StatusCode != http.StatusOK {
-		t.Errorf("got %d, expected %d", res.StatusCode, http.StatusSeeOther)
+		t.Errorf("got %d, expected %d", res.StatusCode, http.StatusOK)
 	}
 	if strings.Compare(res.Request.URL.String(), link.Url) != 0 {
 		t.Errorf("got %s, expected %s", res.Request.URL, link.Url)
@@ -78,7 +78,8 @@ func TestRedirect_ExistingUrl_Status303(t *testing.T) {
 	defer res.Body.Close()
 }
 
-func TestRedirect_NonExistingUrl_Status404(t *testing.T) {
+func TestRedirect_NonExistingUrl_RedirectsToErrorUrl(t *testing.T) {
+	redirectErrorUrl := os.Getenv("MELI_REDIRECT_ERROR_URL")
 	r := mux.NewRouter()
 	r.HandleFunc("/{key}", h.Redirect).Methods(http.MethodGet)
 	ts := httptest.NewServer(r)
@@ -89,8 +90,11 @@ func TestRedirect_NonExistingUrl_Status404(t *testing.T) {
 	if err != nil {
 		t.Errorf("got %s, expected nil", err.Error())
 	}
-	if res.StatusCode != http.StatusNotFound {
-		t.Errorf("got %d, expected %d", res.StatusCode, http.StatusNotFound)
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("got %d, expected %d", res.StatusCode, http.StatusOK)
+	}
+	if strings.Compare(res.Request.URL.String(), redirectErrorUrl) != 0 {
+		t.Errorf("got %s, expected %s", res.Request.URL, redirectErrorUrl)
 	}
 
 	defer res.Body.Close()
